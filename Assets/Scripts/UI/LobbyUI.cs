@@ -29,7 +29,11 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRoom(roomNameInput.text);
     }
-
+    public void SelectCharacter(int index)
+    {
+        PlayerPrefs.SetInt("CharacterIndex", index);
+        print("Personaje seleccionado: " + index);
+    }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         roomListText.text = "";
