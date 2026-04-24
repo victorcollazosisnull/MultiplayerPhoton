@@ -10,21 +10,12 @@ public abstract class SingletonScriptableObject<T> : ScriptableObject where T : 
         {
             if (_instance == null)
             {
-                T[] results = Resources.FindObjectsOfTypeAll<T>();
+                _instance = Resources.Load<T>(typeof(T).Name);
 
-                if (results.Length == 0)
+                if (_instance == null)
                 {
-                    Debug.LogError("SingletonScriptableObject -> Instance -> results length is 0 for type " + typeof(T).ToString() + ".");
-                    return null;
+                    Debug.LogError("No se encontró el asset en Resources para tipo " + typeof(T));
                 }
-
-                if (results.Length > 1)
-                {
-                    Debug.LogError("SingletonScriptableObject -> Instance -> results length is greater than 1 for type " + typeof(T).ToString() + ".");
-                    return null;
-                }
-
-                _instance = results[0];
             }
 
             return _instance;
