@@ -11,6 +11,8 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_InputField roomNameInput;
     [SerializeField] private TMP_Text roomListText;
 
+    [Header("Selector")]
+    [SerializeField] private PlayerCountSelector playerCountSelector;
     public void SetPlayerName()
     {
         PhotonNetwork.NickName = playerNameInput.text;
@@ -20,7 +22,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 4;
+        options.MaxPlayers = (byte)playerCountSelector.GetValue();
 
         PhotonNetwork.CreateRoom(roomNameInput.text, options);
     }
