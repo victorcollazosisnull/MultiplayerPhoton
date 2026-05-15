@@ -1,29 +1,54 @@
 using UnityEngine;
 using Photon.Pun;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private GameObject connectingPanel;
-    [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject selectorCharacterPanel;
+    public enum PanelType
+    {
+        Connecting,
+        Lobby,
+        RoomSettings,
+        Profile,
+        RoomsList,
+        CharacterSelector
+    }
+
+    [System.Serializable]
+    public struct PanelEntry
+    {
+        public PanelType type;
+        public GameObject panelObject;
+    }
+
+    [Header("Configuración de Paneles")]
+    [SerializeField] private List<PanelEntry> allPanels;
 
     private void Start()
     {
-        connectingPanel.SetActive(true);
-        lobbyPanel.SetActive(false);
+        OpenPanel(PanelType.Connecting);
     }
 
     public override void OnConnectedToMaster()
     {
-        connectingPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
+        OpenPanel(PanelType.Lobby);
     }
-    public void ShowPanelSelector() 
+
+    public void OpenPanel(PanelType typeToOpen)
     {
-        selectorCharacterPanel.SetActive(true);
+        foreach (var entry in allPanels)
+        {
+            entry.panelObject.SetActive(entry.type == typeToOpen);
+        }
     }
-    public void ExitPanelSelector() 
+    public void ReturnToMain()
     {
-        selectorCharacterPanel.SetActive(false);
+        OpenPanel(PanelType.Lobby);
     }
+
+    public void ShowLobby() => OpenPanel(PanelType.Lobby);
+    public void ShowProfile() => OpenPanel(PanelType.Profile);
+    public void ShowRoomSettings() => OpenPanel(PanelType.RoomSettings);
+    public void ShowRoomsList() => OpenPanel(PanelType.RoomsList);
+    public void ShowCharacterSelector() => OpenPanel(PanelType.CharacterSelector);
 }

@@ -9,10 +9,20 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     [Header("UI")]
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private TMP_InputField roomNameInput;
-    [SerializeField] private TMP_Text roomListText;
+
+    [Header("Room List")]
+    [SerializeField] private GameObject roomItemPrefab; 
+    [SerializeField] private Transform contentParent;   
+    private List<GameObject> allRoomItems = new List<GameObject>();
+    private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     [Header("Selector")]
     [SerializeField] private PlayerCountSelector playerCountSelector;
+
+    void Start()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+    }
     public void SetPlayerName()
     {
         PhotonNetwork.NickName = playerNameInput.text;
@@ -38,20 +48,42 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        roomListText.text = "";
-
-        for (int i = 0; i < roomList.Count; i++)
+        foreach (RoomInfo info in roomList)
         {
-            RoomInfo room = roomList[i];
+            if (info.RemovedFromList)
+            {
+                cachedRoomList.Remove(info.Name);
+            }
+            else
+            {
+                cachedRoomList[info.Name] = info;
+            }
+        }
 
-            if (room.RemovedFromList) continue;
+        foreach (GameObject item in allRoomItems)
+        {
+            Destroy(item);
+        }
+        allRoomItems.Clear();
 
-            roomListText.text += room.Name + " (" + room.PlayerCount + "/" + room.MaxPlayers + ")\n";
+        foreach (RoomInfo room in cachedRoomList.Values)
+        {
+            GameObject newRoom = Instantiate(roomItemPrefab, contentParent);
+            RoomItem itemScript = newRoom.GetComponent<RoomItem>();
+
+            itemScript.SetRoomInfo(room.Name, room.PlayerCount, room.MaxPlayers);
+
+            allRoomItems.Add(newRoom);
         }
     }
 
     public override void OnJoinedRoom()
     {
         print("Entraste a: " + PhotonNetwork.CurrentRoom.Name);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("ArenaScene");
+        }
     }
 }
