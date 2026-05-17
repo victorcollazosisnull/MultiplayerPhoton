@@ -299,11 +299,11 @@ GameObject:
   - component: {fileID: 4389889636697160246}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6037959727909987969
 Transform:
   m_ObjectHideFlags: 0
@@ -735,3 +735,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df28f1c1274e0d541878c5938725b755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Billboard
+  camTransform: {fileID: 0}

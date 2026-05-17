@@ -1,22 +1,20 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class Billboard : MonoBehaviour
+public class Billboard : MonoBehaviourPun
 {
-    private Transform mainCamTransform;
-
-    void Start()
-    {
-        if (Camera.main != null)
-            mainCamTransform = Camera.main.transform;
-    }
+    [SerializeField] private Transform camTransform;
 
     void LateUpdate()
     {
-        if (mainCamTransform == null)
+        if (camTransform == null)
         {
-            if (Camera.main != null) mainCamTransform = Camera.main.transform;
-            return;
+            if (Camera.main != null)
+                camTransform = Camera.main.transform;
+            else
+                return;
         }
-        transform.LookAt(transform.position + mainCamTransform.forward);
+
+        transform.rotation = camTransform.rotation;
     }
 }
