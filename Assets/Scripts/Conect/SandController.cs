@@ -5,6 +5,16 @@ public class SandController : MonoBehaviourPunCallbacks
 {
     public Transform[] spawnPoints;
 
+    public override void OnEnable()
+    {
+        base.OnEnable();
+    }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+    }
+
     private void Start()
     {
         if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom)
