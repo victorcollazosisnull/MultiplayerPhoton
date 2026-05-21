@@ -6,6 +6,8 @@ public class PlayerInputsController : MonoBehaviour
 {
     public event Action<Vector2> onMoveInput;
     public event Action<Vector2> onLookInput;
+    public event Action onShootInput;
+    public event Action<bool> onAimInput;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -15,5 +17,18 @@ public class PlayerInputsController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         onLookInput?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.started) 
+        {
+            onShootInput?.Invoke();
+        }
+    }
+    public void OnAim(InputAction.CallbackContext context)
+    {
+        if (context.performed) onAimInput?.Invoke(true);
+        if (context.canceled) onAimInput?.Invoke(false);
     }
 }

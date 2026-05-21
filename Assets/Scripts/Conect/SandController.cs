@@ -4,16 +4,7 @@ using Photon.Pun;
 public class SandController : MonoBehaviourPunCallbacks
 {
     public Transform[] spawnPoints;
-
-    public override void OnEnable()
-    {
-        base.OnEnable();
-    }
-
-    public override void OnDisable()
-    {
-        base.OnDisable();
-    }
+    public PlayerFactory factory;
 
     private void Start()
     {
@@ -32,13 +23,18 @@ public class SandController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.LocalPlayer.TagObject != null) return;
 
+        if (factory == null)
+        {
+            Debug.LogError("¡No has asignado la Factory en el SandController!");
+            return;
+        }
+
         int randomIndex = Random.Range(0, spawnPoints.Length);
         Vector3 pos = spawnPoints[randomIndex].position;
 
-        GameObject player = PhotonNetwork.Instantiate("MyCharacter", pos, Quaternion.identity);
+        GameObject player = factory.CreatePlayer(pos, Quaternion.identity);
 
         PhotonNetwork.LocalPlayer.TagObject = player;
-
-        Debug.Log("Personaje instanciado para: " + PhotonNetwork.NickName);
+        Debug.Log("Fábrica creó al personaje correctamente.");
     }
 }
