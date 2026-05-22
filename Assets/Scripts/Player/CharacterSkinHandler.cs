@@ -1,45 +1,38 @@
 using UnityEngine;
 using Photon.Pun;
+using System.Collections;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class CharacterSkinHandler : MonoBehaviourPun, IPunObservable
+public class CharacterSkinHandler : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private GameObject[] skinPrefabs; 
-    private int currentSkinIndex = -1;
+    [SerializeField] private GameObject[] skinPrefabs;
     private GameObject currentVisual;
+    private int mySkinIndex = -1;
 
-    private void Awake()
+    private void Start()
     {
         if (photonView.IsMine)
         {
-            currentSkinIndex = PlayerPrefs.GetInt("CharacterIndex", 0);
-            UpdateSkin(currentSkinIndex);
+            mySkinIndex = PlayerPrefs.GetInt("CharacterIndex", 0);
+            photonView.RPC("RPC_ApplySkin", RpcTarget.AllBuffered, mySkinIndex);
         }
     }
 
-    void UpdateSkin(int index)
+    [PunRPC]
+    void RPC_ApplySkin(int index)
     {
+        if (index < 0 || index >= skinPrefabs.Length) return;
+
         if (currentVisual != null) Destroy(currentVisual);
 
         currentVisual = Instantiate(skinPrefabs[index], transform.position, transform.rotation);
         currentVisual.transform.SetParent(this.transform);
 
-        if (currentVisual.TryGetComponent(out RotateObject rot)) rot.enabled = false;
-    }
+        currentVisual.transform.localPosition = Vector3.zero;
+        currentVisual.transform.localRotation = Quaternion.identity;
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(currentSkinIndex);
-        }
-        else
-        {
-            int receivedIndex = (int)stream.ReceiveNext();
-            if (currentSkinIndex != receivedIndex)
-            {
-                currentSkinIndex = receivedIndex;
-                UpdateSkin(currentSkinIndex);
-            }
-        }
+        if (currentVisual.TryGetComponent(out RotateObject rot)) rot.enabled = false;
+
+        Debug.Log("Skin aplicada vía RPC: " + index);
     }
 }

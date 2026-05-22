@@ -115,7 +115,6 @@ MonoBehaviour:
   observableSearch: 0
   ObservedComponents:
   - {fileID: 8483274519043522892}
-  - {fileID: 947717937583360580}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -193,7 +192,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
-  healthBarFill: {fileID: 843257847444319351}
+  floatingHealthBar: {fileID: 843257847444319351}
+  floatingNameText: {fileID: 1971705307158652868}
+  screenHealthBar: {fileID: 0}
+  screenNameText: {fileID: 0}
+  damageOverlay: {fileID: 0}
   lerpSpeed: 5
 --- !u!114 &3025120676057292006
 MonoBehaviour:
@@ -243,6 +246,7 @@ MonoBehaviour:
   - {fileID: 2303815954975160279}
   - {fileID: 692739511132115180}
   - {fileID: 3025120676057292006}
+  myFloatingCanvas: {fileID: 6567610904012404576}
 --- !u!1 &2578396680838871331
 GameObject:
   m_ObjectHideFlags: 0

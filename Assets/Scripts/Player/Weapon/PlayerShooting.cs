@@ -45,11 +45,45 @@ public class PlayerShooting : MonoBehaviourPun
             if (Physics.Raycast(ray, out hit, range))
             {
                 PhotonView targetPV = hit.transform.GetComponent<PhotonView>();
+
                 if (targetPV != null && !targetPV.IsMine)
                 {
-                    targetPV.RPC("TakeDamage", RpcTarget.All, damage);
+                    PlayerHealth victimHealth = targetPV.GetComponent<PlayerHealth>();
+
+                    if (victimHealth != null)
+                    {
+                        if (victimHealth.GetCurrentHealth() <= damage)
+                        {
+                            RegistrarKill(PhotonNetwork.LocalPlayer.NickName, targetPV.Owner.NickName);
+                        }
+
+                        targetPV.RPC("TakeDamage", RpcTarget.All, damage);
+                    }
                 }
             }
         }
+    }
+    void RegistrarKill(string atacante, string victima)
+    {
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Kills"))
+        {
+            int currentKills = (int)PhotonNetwork.LocalPlayer.CustomProperties["Kills"];
+            ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
+            hash.Add("Kills", currentKills + 1);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+        else
+        {
+            ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable { { "Kills", 1 } };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+
+        photonView.RPC("RPC_KillMessage", RpcTarget.All, atacante, victima);
+    }
+
+    [PunRPC]
+    void RPC_KillMessage(string atacante, string victima)
+    {
+        Debug.Log("<color=red>" + atacante + " eliminó a " + victima + "</color>");
     }
 }
