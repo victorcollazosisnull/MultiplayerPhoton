@@ -6015,7 +6015,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 128
-  collisionRadius: 0.2
+  collisionRadius: 0.1
   minDistance: 0.5
 --- !u!1 &7909719880578484570
 GameObject:
@@ -6113,5 +6113,5 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 128
-  collisionRadius: 0.2
+  collisionRadius: 0.1
   minDistance: 0.5

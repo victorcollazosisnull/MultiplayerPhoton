@@ -9,6 +9,8 @@ public class SandController : MonoBehaviourPunCallbacks
     public Transform[] spawnPoints;
     public PlayerFactory factory;
     [SerializeField] private GameObject panelMuerte;
+
+    public int CurrentSkinIndex { get; private set; }
     private void Awake()
     {
         Instance = this;
@@ -24,15 +26,9 @@ public class SandController : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        int mySkin = PlayerPrefs.GetInt("CharacterIndex", 0);
+        CurrentSkinIndex = PlayerPrefs.GetInt("CharacterIndex", 0);    
 
-        Hashtable props = new Hashtable();
-        props.Add("Kills", 0);
-        props.Add("SkinIndex", mySkin);
-
-        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-
-        Invoke("SpawnPlayer", 0.5f);
+        SpawnPlayer();
     }
 
     void SpawnPlayer()

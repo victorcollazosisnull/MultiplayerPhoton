@@ -9,11 +9,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     public float maxHealth = 100f;
     [SerializeField] private float currentHealth;
 
-    [Header("UI Flotante (Enemigos)")]
+    [Header("UI 3D")]
     [SerializeField] private Image floatingHealthBar;
     [SerializeField] private TextMeshProUGUI floatingNameText;
 
-    [Header("UI Pantalla (Mía)")]
+    [Header("UI Mia")]
     [SerializeField] private Image screenHealthBar;
     [SerializeField] private TextMeshProUGUI screenNameText;
     [SerializeField] private Image damageOverlay;
