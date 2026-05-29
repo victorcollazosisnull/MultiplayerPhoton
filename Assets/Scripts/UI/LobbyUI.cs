@@ -34,6 +34,9 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         RoomOptions options = new RoomOptions();
         options.MaxPlayers = (byte)playerCountSelector.GetValue();
 
+        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "IsPlaying", false } };
+        options.CustomRoomPropertiesForLobby = new string[] { "IsPlaying" };
+
         PhotonNetwork.CreateRoom(roomNameInput.text, options);
     }
 

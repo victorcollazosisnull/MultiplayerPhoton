@@ -76,6 +76,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     [PunRPC]
     public void TakeDamage(float amount)
     {
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "ArenaScene") return;
+
         if (photonView.IsMine)
         {
             currentHealth -= amount;

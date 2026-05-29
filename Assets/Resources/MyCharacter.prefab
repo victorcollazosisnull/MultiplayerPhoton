@@ -146,7 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b79eb1c28aa9148b55c6039f32a687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  speed: 5
+  speed: 9
+  jumpHeight: 9
+  gravity: -15
 --- !u!114 &947717937583360580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +370,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: c01d0e63-a60e-401e-8a66-ae5b44afefa5
     m_ActionName: 'Game/Aim[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2303815954975160279}
+        m_TargetAssemblyTypeName: PlayerInputsController, Assembly-CSharp
+        m_MethodName: OnJump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: cedc2ac4-6758-4b88-82b4-c6f99a0bcd7f
+    m_ActionName: 'Game/Jump[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2303815954975160279}
+        m_TargetAssemblyTypeName: PlayerInputsController, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 80b31bc7-26ab-46e4-a881-5f626b048bfd
+    m_ActionName: 'Game/Pause[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Game
