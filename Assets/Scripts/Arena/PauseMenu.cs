@@ -100,22 +100,27 @@ public class PauseMenu : MonoBehaviourPunCallbacks
 
     public void QuitGame()
     {
-        if (SandController.Instance != null)
-            Destroy(SandController.Instance.gameObject);
-
         if (PhotonNetwork.LocalPlayer.TagObject is GameObject playerObj && playerObj != null)
             PhotonNetwork.Destroy(playerObj);
-
         PhotonNetwork.LocalPlayer.TagObject = null;
         PhotonNetwork.LeaveRoom();
     }
 
     public override void OnLeftRoom()
     {
-        Debug.Log("[PauseMenu] OnLeftRoom disparado, cargando Login...");
+        PhotonNetwork.AutomaticallySyncScene = false; 
+
+        if (PhotonNetwork.LocalPlayer.TagObject is GameObject playerObj && playerObj != null)
+        {
+            PhotonNetwork.Destroy(playerObj);
+            PhotonNetwork.LocalPlayer.TagObject = null;
+        }
+        if (SandController.Instance != null)
+            Destroy(SandController.Instance.gameObject);
+
+        SandController.IsLeavingRoom = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        PhotonNetwork.LocalPlayer.TagObject = null;
         SceneManager.LoadScene("Login");
     }
 }

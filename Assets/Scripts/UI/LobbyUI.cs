@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviourPunCallbacks
@@ -24,15 +25,18 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
         bool inLobby = PhotonNetwork.InLobby;
         createRoomButton.interactable = inLobby;
         joinRoomButton.interactable = inLobby;
 
         if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
-        {
             PhotonNetwork.JoinLobby();
+
+        else if (PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            createRoomButton.interactable = true;
+            joinRoomButton.interactable = true;
         }
     }
 
@@ -74,6 +78,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
         createRoomButton.interactable = true;
         joinRoomButton.interactable = true;
     }
@@ -89,6 +94,8 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         print("Entraste a: " + PhotonNetwork.CurrentRoom.Name);
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel("ArenaScene");
+        else
+            SceneManager.LoadScene("ArenaScene");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

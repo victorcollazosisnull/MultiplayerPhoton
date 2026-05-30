@@ -22,10 +22,13 @@ public class SandController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        Debug.Log("[SandController] Start | InRoom=" + PhotonNetwork.InRoom + " | hasSpawned=" + hasSpawned);
+        Debug.Log("[SandController] Start | InRoom=" + PhotonNetwork.InRoom +
+              " | IsLeavingRoom=" + IsLeavingRoom +
+              " | hasSpawned=" + hasSpawned);
+
         if (IsLeavingRoom)
         {
-            Debug.Log("[SandController] Saliendo de sala, no spawnear.");
+            Debug.Log("[SandController] Flag activo, NO spawnear.");
             return;
         }
         if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom && !hasSpawned)
