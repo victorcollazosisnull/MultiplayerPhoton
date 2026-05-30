@@ -1,5 +1,6 @@
-using UnityEngine;
+using Photon.Pun;
 using TMPro;
+using UnityEngine;
 
 public class CharacterSelector : MonoBehaviour
 {
@@ -45,6 +46,10 @@ public class CharacterSelector : MonoBehaviour
         nameText.text = characters[index].name;
 
         PlayerPrefs.SetInt("CharacterIndex", index);
+
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
+        props["SkinIndex"] = index;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
         Debug.Log("Personaje seleccionado: " + characters[index].name);
     }

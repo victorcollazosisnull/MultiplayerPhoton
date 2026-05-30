@@ -5524,6 +5524,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LobbyUI
   playerNameInput: {fileID: 223866932}
   roomNameInput: {fileID: 744819603}
+  createRoomButton: {fileID: 498409459}
+  joinRoomButton: {fileID: 1664354483}
   roomItemPrefab: {fileID: 3630441539784727737, guid: b90dd064d9d9b9f4082b7e9c57798d95, type: 3}
   contentParent: {fileID: 2009394221}
   playerCountSelector: {fileID: 1224789809}

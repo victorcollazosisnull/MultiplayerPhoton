@@ -7,12 +7,13 @@ public class PlayerFactory : MonoBehaviour
 
     public GameObject CreatePlayer(Vector3 position, Quaternion rotation)
     {
-        int skinIndex = SandController.Instance.CurrentSkinIndex;
+        int skinIndex = 0;
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("SkinIndex", out object val))
+            skinIndex = (int)val;
+        else
+            skinIndex = PlayerPrefs.GetInt("CharacterIndex", 0); 
 
         object[] data = new object[] { skinIndex };
-
-        GameObject player = PhotonNetwork.Instantiate(playerPrefabName, position, rotation, 0, data);
-
-        return player;
+        return PhotonNetwork.Instantiate(playerPrefabName, position, rotation, 0, data);
     }
 }

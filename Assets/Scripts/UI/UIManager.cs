@@ -26,12 +26,20 @@ public class UIManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        OpenPanel(PanelType.Connecting);
+        if (PhotonNetwork.IsConnectedAndReady)
+            OpenPanel(PanelType.Lobby);
+        else
+            OpenPanel(PanelType.Connecting);
     }
 
     public override void OnConnectedToMaster()
     {
-        OpenPanel(PanelType.Lobby);
+        PhotonNetwork.JoinLobby(); 
+    }
+
+    public override void OnJoinedLobby()
+    {
+        OpenPanel(PanelType.Lobby); 
     }
 
     public void OpenPanel(PanelType typeToOpen)

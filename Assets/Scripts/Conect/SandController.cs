@@ -2,15 +2,19 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class SandController : MonoBehaviourPunCallbacks
 {
-    public static SandController Instance;
+    public static bool IsLeavingRoom = false;
 
+    public static SandController Instance;
     public Transform[] spawnPoints;
     public PlayerFactory factory;
     [SerializeField] private GameObject panelMuerte;
-
     public int CurrentSkinIndex { get; private set; }
+
+    private bool hasSpawned = false; 
+
     private void Awake()
     {
         Instance = this;
@@ -18,57 +22,64 @@ public class SandController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom)
+        Debug.Log("[SandController] Start | InRoom=" + PhotonNetwork.InRoom + " | hasSpawned=" + hasSpawned);
+        if (IsLeavingRoom)
         {
-            SpawnPlayer();
+            Debug.Log("[SandController] Saliendo de sala, no spawnear.");
+            return;
         }
+        if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom && !hasSpawned)
+            SpawnPlayer();
     }
 
     public override void OnJoinedRoom()
     {
-        CurrentSkinIndex = PlayerPrefs.GetInt("CharacterIndex", 0);    
-
-        SpawnPlayer();
+        IsLeavingRoom = false; 
+        Debug.Log("[SandController] OnJoinedRoom disparado! hasSpawned=" + hasSpawned);
+        if (!hasSpawned) SpawnPlayer();
     }
 
     void SpawnPlayer()
     {
-        if (PhotonNetwork.LocalPlayer.TagObject != null)
+        hasSpawned = true;
+        CurrentSkinIndex = PlayerPrefs.GetInt("CharacterIndex", 0);
+
+        if (PhotonNetwork.LocalPlayer.TagObject is GameObject oldPlayer)
         {
-            GameObject oldPlayer = PhotonNetwork.LocalPlayer.TagObject as GameObject;
-            if (oldPlayer == null) 
+            if (oldPlayer != null && oldPlayer.activeInHierarchy)
             {
-                PhotonNetwork.LocalPlayer.TagObject = null;
+                Debug.Log("Player ya existe, no spawnear.");
+                return;
             }
-            else
-            {
-                return; 
-            }
+            PhotonNetwork.LocalPlayer.TagObject = null;
         }
 
-        if (factory == null)
-        {
-            Debug.LogError("¡No has asignado la Factory en el SandController!");
-            return;
-        }
+        if (factory == null) { Debug.LogError("No factory!"); return; }
 
         int randomIndex = Random.Range(0, spawnPoints.Length);
-        Vector3 pos = spawnPoints[randomIndex].position;
-
-        GameObject player = factory.CreatePlayer(pos, Quaternion.identity);
-
+        GameObject player = factory.CreatePlayer(spawnPoints[randomIndex].position, Quaternion.identity);
         PhotonNetwork.LocalPlayer.TagObject = player;
-        Debug.Log("Fábrica creó al personaje correctamente.");
+        Debug.Log("Player spawneado correctamente.");
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        if (otherPlayer.TagObject is GameObject leftPlayerObj && leftPlayerObj != null)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Destroy(leftPlayerObj);
+            }
+            otherPlayer.TagObject = null;
+        }
     }
 
     public IEnumerator RespawnRoutine()
     {
+        hasSpawned = false; 
         if (panelMuerte != null) panelMuerte.SetActive(true);
-
-        yield return new WaitForSeconds(3f); 
-
+        yield return new WaitForSeconds(3f);
         if (panelMuerte != null) panelMuerte.SetActive(false);
-
         SpawnPlayer();
     }
 }
