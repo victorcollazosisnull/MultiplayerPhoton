@@ -30,6 +30,6 @@ public class RoomItem : MonoBehaviour
 
     public void OnClickJoin()
     {
-        PhotonNetwork.JoinRoom(roomName);
+        GameNetworkManager.Instance.JoinRoom(roomName);
     }
 }

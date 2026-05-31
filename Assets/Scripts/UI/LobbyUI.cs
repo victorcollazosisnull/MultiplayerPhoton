@@ -3,7 +3,6 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviourPunCallbacks
@@ -12,105 +11,144 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private TMP_InputField roomNameInput;
     [SerializeField] private Button createRoomButton;
-    [SerializeField] private Button joinRoomButton;
 
     [Header("Room List")]
     [SerializeField] private GameObject roomItemPrefab;
     [SerializeField] private Transform contentParent;
-    private List<GameObject> allRoomItems = new List<GameObject>();
-    private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
+
+    private List<GameObject> allRoomItems = new();
+    private Dictionary<string, RoomInfo> cachedRoomList = new();
 
     [Header("Selector")]
     [SerializeField] private PlayerCountSelector playerCountSelector;
 
     void Start()
     {
-        bool inLobby = PhotonNetwork.InLobby;
-        createRoomButton.interactable = inLobby;
-        joinRoomButton.interactable = inLobby;
+        Debug.Log(
+            $"[LobbyUI] Start | State={GameNetworkManager.Instance.CurrentState}"
+        );
 
-        if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
-            PhotonNetwork.JoinLobby();
-
-        else if (PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.AutomaticallySyncScene = true;
-            createRoomButton.interactable = true;
-            joinRoomButton.interactable = true;
-        }
+        RefreshButtons();
     }
+
+    // ==========================
+    // PLAYER NAME
+    // ==========================
 
     public void SetPlayerName()
     {
-        PhotonNetwork.NickName = playerNameInput.text;
-        print("Nombre seteado: " + PhotonNetwork.NickName);
+        PhotonNetwork.NickName =
+            playerNameInput.text.Trim();
+
+        Debug.Log(
+            "Nombre seteado: "
+            + PhotonNetwork.NickName
+        );
     }
+
+    // ==========================
+    // CREATE ROOM
+    // ==========================
 
     public void CreateRoom()
     {
-        if (!PhotonNetwork.InLobby)
+        string roomName =
+            roomNameInput.text.Trim();
+
+        if (string.IsNullOrEmpty(roomName))
         {
-            Debug.LogWarning("Aún no estás en el lobby, espera...");
+            Debug.LogWarning(
+                "Escribe un nombre de sala"
+            );
+
             return;
         }
-        RoomOptions options = new RoomOptions();
-        options.MaxPlayers = (byte)playerCountSelector.GetValue();
-        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "IsPlaying", false } };
-        options.CustomRoomPropertiesForLobby = new string[] { "IsPlaying" };
-        PhotonNetwork.CreateRoom(roomNameInput.text, options);
+
+        GameNetworkManager.Instance.CreateRoom(
+            roomName,
+            (byte)playerCountSelector.GetValue()
+        );
     }
 
-    public void JoinRoom()
-    {
-        if (!PhotonNetwork.InLobby)
-        {
-            Debug.LogWarning("Aún no estás en el lobby, espera...");
-            return;
-        }
-        PhotonNetwork.JoinRoom(roomNameInput.text);
-    }
+    // ==========================
+    // CHARACTER
+    // ==========================
 
     public void SelectCharacter(int index)
     {
-        PlayerPrefs.SetInt("CharacterIndex", index);
-        print("Personaje seleccionado: " + index);
+        PlayerPrefs.SetInt(
+            "CharacterIndex",
+            index
+        );
+
+        Debug.Log(
+            "Personaje seleccionado: "
+            + index
+        );
     }
 
-    public override void OnJoinedLobby()
+    // ==========================
+    // UI STATE
+    // ==========================
+
+    void Update()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-        createRoomButton.interactable = true;
-        joinRoomButton.interactable = true;
+        RefreshButtons();
     }
 
-    public override void OnLeftRoom()
+    void RefreshButtons()
     {
-        createRoomButton.interactable = false;
-        joinRoomButton.interactable = false;
+        bool canInteract =
+            GameNetworkManager.Instance.CurrentState
+            == GameNetworkManager.NetworkState.InLobby;
+
+        createRoomButton.interactable =
+            canInteract;
     }
 
-    public override void OnJoinedRoom()
-    {
-        print("Entraste a: " + PhotonNetwork.CurrentRoom.Name);
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel("ArenaScene");
-        else
-            SceneManager.LoadScene("ArenaScene");
-    }
+    // ==========================
+    // ROOM LIST
+    // ==========================
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    public override void OnRoomListUpdate(
+        List<RoomInfo> roomList)
     {
         foreach (RoomInfo info in roomList)
         {
-            if (info.RemovedFromList) cachedRoomList.Remove(info.Name);
-            else cachedRoomList[info.Name] = info;
+            if (info.RemovedFromList)
+            {
+                cachedRoomList.Remove(info.Name);
+            }
+            else
+            {
+                cachedRoomList[info.Name] =
+                    info;
+            }
         }
-        foreach (GameObject item in allRoomItems) Destroy(item);
-        allRoomItems.Clear();
-        foreach (RoomInfo room in cachedRoomList.Values)
+
+        foreach (GameObject item in allRoomItems)
         {
-            GameObject newRoom = Instantiate(roomItemPrefab, contentParent);
-            newRoom.GetComponent<RoomItem>().SetRoomInfo(room.Name, room.PlayerCount, room.MaxPlayers);
+            Destroy(item);
+        }
+
+        allRoomItems.Clear();
+
+        foreach (RoomInfo room
+                 in cachedRoomList.Values)
+        {
+            GameObject newRoom =
+                Instantiate(
+                    roomItemPrefab,
+                    contentParent
+                );
+
+            newRoom.GetComponent<RoomItem>()
+                .SetRoomInfo(
+                    room.Name,
+                    room.PlayerCount,
+                    room.MaxPlayers
+                );
+
             allRoomItems.Add(newRoom);
         }
     }

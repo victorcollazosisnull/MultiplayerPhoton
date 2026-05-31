@@ -1083,9 +1083,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8993654878812672841, guid: 406bf1b2fbe3b71479f03041cadccea1, type: 3}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: OnLeftRoom
+      - m_Target: {fileID: 858005281}
+        m_TargetAssemblyTypeName: PauseMenuUI, Assembly-CSharp
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1175,6 +1175,7 @@ GameObject:
   - component: {fileID: 858005278}
   - component: {fileID: 858005280}
   - component: {fileID: 858005279}
+  - component: {fileID: 858005281}
   m_Layer: 5
   m_Name: PausePanel
   m_TagString: Untagged
@@ -1241,6 +1242,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 858005277}
   m_CullTransparentMesh: 1
+--- !u!114 &858005281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 858005277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7347a62b8af23f54eb39aad65ea01e65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseMenuUI
 --- !u!1 &957319976
 GameObject:
   m_ObjectHideFlags: 0

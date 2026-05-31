@@ -5,8 +5,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class SandController : MonoBehaviourPunCallbacks
 {
-    public static bool IsLeavingRoom = false;
-
     public static SandController Instance;
     public Transform[] spawnPoints;
     public PlayerFactory factory;
@@ -22,22 +20,21 @@ public class SandController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        Debug.Log("[SandController] Start | InRoom=" + PhotonNetwork.InRoom +
-              " | IsLeavingRoom=" + IsLeavingRoom +
-              " | hasSpawned=" + hasSpawned);
+        Debug.Log("[SandController] Start | InRoom="
+            + PhotonNetwork.InRoom
+            + " | hasSpawned="
+            + hasSpawned);
 
-        if (IsLeavingRoom)
+        if (PhotonNetwork.IsConnectedAndReady
+            && PhotonNetwork.InRoom
+            && !hasSpawned)
         {
-            Debug.Log("[SandController] Flag activo, NO spawnear.");
-            return;
-        }
-        if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom && !hasSpawned)
             SpawnPlayer();
+        }
     }
 
     public override void OnJoinedRoom()
     {
-        IsLeavingRoom = false; 
         Debug.Log("[SandController] OnJoinedRoom disparado! hasSpawned=" + hasSpawned);
         if (!hasSpawned) SpawnPlayer();
     }
@@ -67,14 +64,7 @@ public class SandController : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-        if (otherPlayer.TagObject is GameObject leftPlayerObj && leftPlayerObj != null)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.Destroy(leftPlayerObj);
-            }
-            otherPlayer.TagObject = null;
-        }
+        otherPlayer.TagObject = null;
     }
 
     public IEnumerator RespawnRoutine()
