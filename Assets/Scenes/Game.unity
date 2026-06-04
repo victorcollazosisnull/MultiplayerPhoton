@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 417504480}
   - component: {fileID: 417504479}
   m_Layer: 0
-  m_Name: Kills
+  m_Name: KillsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2104,9 +2104,9 @@ RectTransform:
   - {fileID: 1292371449}
   - {fileID: 1870248430}
   - {fileID: 668911346}
-  - {fileID: 417504478}
   - {fileID: 1069789705}
   - {fileID: 858005278}
+  - {fileID: 417504478}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 445507550}
   - component: {fileID: 445507549}
   m_Layer: 0
-  m_Name: Kills
+  m_Name: KillsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -57,7 +57,7 @@ public class PlayerShooting : MonoBehaviourPun
                             RegistrarKill(PhotonNetwork.LocalPlayer.NickName, targetPV.Owner.NickName);
                         }
 
-                        targetPV.RPC("TakeDamage", RpcTarget.All, damage);
+                        targetPV.RPC("TakeDamage", RpcTarget.All, damage, PhotonNetwork.LocalPlayer.ActorNumber);
                     }
                 }
             }
@@ -65,6 +65,7 @@ public class PlayerShooting : MonoBehaviourPun
     }
     void RegistrarKill(string atacante, string victima)
     {
+        Debug.Log("[RegistrarKill] " + atacante + " mató a " + victima);
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Kills"))
         {
             int currentKills = (int)PhotonNetwork.LocalPlayer.CustomProperties["Kills"];

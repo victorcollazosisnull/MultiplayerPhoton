@@ -17,13 +17,11 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     [SerializeField] private Image screenHealthBar;
     [SerializeField] private TextMeshProUGUI screenNameText;
     [SerializeField] private Image damageOverlay;
-
     [SerializeField] private float lerpSpeed = 5f;
 
-    private void Awake()
-    {
-        currentHealth = maxHealth;
-    }
+    private int lastAttackerActorNumber = -1;
+    private void Awake() { currentHealth = maxHealth; }
+
     private void Start()
     {
         if (floatingNameText != null)
@@ -74,12 +72,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, int attackerActorNumber)
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "ArenaScene") return;
-
         if (photonView.IsMine)
         {
+            lastAttackerActorNumber = attackerActorNumber;
             currentHealth -= amount;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -90,7 +88,6 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             }
 
             photonView.RPC("RPC_UpdateHealth", RpcTarget.All, currentHealth);
-
             if (currentHealth <= 0) Die();
         }
     }
@@ -117,16 +114,10 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             if (SandController.Instance != null)
-            {
                 SandController.Instance.StartCoroutine(SandController.Instance.RespawnRoutine());
-            }
-
-            PhotonNetwork.Destroy(this.gameObject);
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
-    public float GetCurrentHealth() 
-    {
-        return currentHealth; 
-    }
+    public float GetCurrentHealth() => currentHealth;
 }
