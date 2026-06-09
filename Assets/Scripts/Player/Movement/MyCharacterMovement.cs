@@ -6,6 +6,7 @@ public class MyCharacterMovement : MonoBehaviourPun
 {
     private CharacterController controller;
     private PlayerInputsController inputs;
+    public Animator animator;
     private Vector2 moveInput;
 
     [Header("Move Values")]
@@ -22,6 +23,7 @@ public class MyCharacterMovement : MonoBehaviourPun
     {
         controller = GetComponent<CharacterController>();
         inputs = GetComponent<PlayerInputsController>();
+        Debug.Log("[Movement] Animator encontrado: " + (animator != null));
     }
 
     private void Start()
@@ -50,7 +52,8 @@ public class MyCharacterMovement : MonoBehaviourPun
 
         HandleMovement();
         ApplyGravity();
-        HandleRotation(); 
+        HandleRotation();
+        UpdateAnimator();
     }
 
     private void HandleMovement()
@@ -108,5 +111,17 @@ public class MyCharacterMovement : MonoBehaviourPun
         {
             transform.rotation = Quaternion.LookRotation(targetRotation);
         }
+    }
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        animator.SetFloat("xSpeed", moveInput.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("ySpeed", moveInput.y, 0.1f, Time.deltaTime);
+    }
+    public void SetAnimator(Animator newAnimator)
+    {
+        animator = newAnimator;
+        Debug.Log("[Movement] Animator asignado: " + (animator != null));
     }
 }
